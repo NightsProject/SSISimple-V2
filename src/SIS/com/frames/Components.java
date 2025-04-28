@@ -1018,7 +1018,7 @@ public static void formWindowActivated(){
 
 
 
-public static void saveProgram(){
+public static void saveProgramClicked(){
 
         //waiting popup to notify if you want to proceed to edit and the students data will also be modified
         
@@ -1245,7 +1245,6 @@ public static void cancelStudentClicked(){
     editButton.setVisible(true);
     saveButton.setVisible(false);
 
-    studentTable.setFocusable(true);
     studentTable.setEnabled(true);
     SSIS.setEnabled(true);
 
@@ -1542,8 +1541,7 @@ public static void saveCollegeClicked(){
           //check college Code if blank
         if(collegeCodeC.getText().isBlank()){
             checkpoint = false;
-             collegeColor.setVisible(true);
-             collegeColor.setToolTipText("It's Empty");
+            JOptionPane.showMessageDialog(null, "College Code cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
         } else {
             
             String collegeCode = collegeCodeC.getText().toLowerCase();
@@ -1717,7 +1715,11 @@ public static void cancelCollegeClicked(){
     
     collegeCodeC.setFocusable(false);
     collegeCodeN.setFocusable(false);
+
+    
+    collegeTable.setEnabled(true);
     getCollegeTableRowData(); // Use Components method
+    
 }
 }
 

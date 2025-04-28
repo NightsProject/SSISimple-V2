@@ -1080,7 +1080,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_searchProgramKeyReleased
 
     private void saveProgramMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveProgramMouseClicked
-        Components.saveProgram();
+        Components.saveProgramClicked();
       
     }//GEN-LAST:event_saveProgramMouseClicked
 
