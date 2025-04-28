@@ -1198,8 +1198,13 @@ public static void deleteProgramClicked(){
         if (confirm == JOptionPane.YES_OPTION) {
             // Remove the program from the list
             Main.programData.removeIf(program -> program.getProgramCode().equals(programCode));
-            Write.writeProgram(); // Update the database
-
+        
+            try {
+                Write.deleteProgram(programCode); // Update the database
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error deleting program: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+          
             // Update associated students
             for (Student student : Main.studentData) {
                 if (student.getProgramCode().equals(programCode)) {
@@ -1451,7 +1456,11 @@ public static void deleteStudentClicked(){
     if (confirm == JOptionPane.YES_OPTION) {
         // Remove the student from the list
         Main.studentData.removeIf(student -> student.getIdNum().equals(idNumber));
-        Write.writeStudent(); // Update the database
+        try {
+            Write.deleteStudent(idNumber); // Update the database
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error deleting student: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         // Refresh the data
         Components.loadStudentData(); // Use Components method
@@ -1648,7 +1657,11 @@ public static void deleteCollegeClicked(){
         if (confirm == JOptionPane.YES_OPTION) {
             // Remove the college from the list
             Main.collegeData.removeIf(college -> college.getCollegeCode().equals(collegeCode));
-            Write.writeCollege(); // Update the database
+            try {
+                Write.deleteCollege(collegeCode); // Update the database
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error deleting college: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
             // Update associated programs
             for (Program program : Main.programData) {
