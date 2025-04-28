@@ -4,10 +4,10 @@ import SIS.com.objects.Program;
 import SIS.com.objects.Student;
 import SIS.com.Read;
 import SIS.com.Initialize;
-
 import SIS.com.frames.MainWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.util.ArrayList;
+
 
 public class Main {
     
@@ -16,8 +16,8 @@ public class Main {
     
     // Database credentials
     public static final String DB_URL = "jdbc:mysql://localhost:3306/ssisdb"; // Replace with your database URL
-    public static final String DB_USER = "nights"; // Replace with your database username
-    public static final String DB_PASSWORD = "10222002"; // Replace with your database password
+    public static final String DB_USER = "user"; // Replace with your database username
+    public static final String DB_PASSWORD = "user"; // Replace with your database password
     
     // Maximum 
     public static int MAX_COLLEGE = 9999;
@@ -58,11 +58,7 @@ public class Main {
         
         showMenuForm();
         
-        
-        for (int i = 0; i < collegeData.size(); i++) {
-            System.out.print(collegeData.get(i).getCollegeCode() + " " + collegeData.get(i).getCollegeName() + "\n");
-        }
-        
+
        
     }
     

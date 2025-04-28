@@ -842,7 +842,8 @@ public static void addButtonCollegeDialog(){
         if (checkpoint) {
             Main.collegeData.add(new College(codeFieldC.getText(), nameFieldC.getText()));
             Write.writeCollege(); // Save to database
-            Components.loadCollegeData(); // Use Components method
+            loadCollegeData(); 
+            loadCollegeCom();
             AddCollegeDialog.dispose();
         }
 }
@@ -897,7 +898,8 @@ public static void addButtonProgramDialog(){
         if (checkpoint) {
             Main.programData.add(new Program(codeFieldP.getText(), nameFieldP.getText(), collegeCode));
             Write.writeProgram(); // Save to database
-            Components.loadProgramData(); // Use Components method
+            loadProgramData(); 
+            loadProgramCom();
             AddProgramDialog.dispose();
         }
 }
@@ -1198,13 +1200,8 @@ public static void deleteProgramClicked(){
         if (confirm == JOptionPane.YES_OPTION) {
             // Remove the program from the list
             Main.programData.removeIf(program -> program.getProgramCode().equals(programCode));
-        
-            try {
-                Write.deleteProgram(programCode); // Update the database
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error deleting program: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-          
+            Write.writeProgram(); // Update the database
+
             // Update associated students
             for (Student student : Main.studentData) {
                 if (student.getProgramCode().equals(programCode)) {
@@ -1456,11 +1453,7 @@ public static void deleteStudentClicked(){
     if (confirm == JOptionPane.YES_OPTION) {
         // Remove the student from the list
         Main.studentData.removeIf(student -> student.getIdNum().equals(idNumber));
-        try {
-            Write.deleteStudent(idNumber); // Update the database
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error deleting student: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        Write.writeStudent(); // Update the database
 
         // Refresh the data
         Components.loadStudentData(); // Use Components method
@@ -1657,11 +1650,7 @@ public static void deleteCollegeClicked(){
         if (confirm == JOptionPane.YES_OPTION) {
             // Remove the college from the list
             Main.collegeData.removeIf(college -> college.getCollegeCode().equals(collegeCode));
-            try {
-                Write.deleteCollege(collegeCode); // Update the database
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error deleting college: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            Write.writeCollege(); // Update the database
 
             // Update associated programs
             for (Program program : Main.programData) {
