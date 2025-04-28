@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Launch SIS Application",
+      "mainClass": "${input:mainClass}",
+      "projectName": "SIS-CCC151",
+      "cwd": "${workspaceFolder}",
+      "vmArgs": "",
+      "args": "",
+      "console": "internalConsole",
+      "stopOnEntry": false
+    }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "mainClass",
+      "description": "Enter the fully qualified main class (e.g., SIS.Main)"
+    }
+  ]
+}

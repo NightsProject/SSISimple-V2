@@ -1,143 +1,111 @@
-
 package SIS.com;
 
 import SIS.Main;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
 
-/**
- *
- * @author Nights
- */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Initialize {
-    
-    public static void readyFiles(){
-        
-        readyCollegeDataCsv();
-        readyProgramDataCsv();
-        readyStudentDataCsv();
-        readyYearLevelCsv();
-        
+
+    public static void readyFiles() {
+        readyCollegeTable();
+        readyProgramTable();
+        readyStudentTable();
+        readyYearLevelTable();
+        readyYearsTable();
     }
-    
-    public static void readyCollegeDataCsv(){
-        
-        try{
-            
-            File collegeData = new File("CollegeData.csv");
-            Main.collegeDataFilePath = collegeData.getAbsolutePath();
-            
-            FileWriter write = new FileWriter(collegeData, true);
-            Scanner scan = new Scanner(collegeData);
-            
-            int count = 0;
-            while (scan.hasNextLine()) {
-                count++;
-                break;
-            }
-        
-            if (collegeData.exists() && count == 0) {
-                write.write(Main.END_LINE);
-            }
-        
-            
-        write.close();
-        scan.close();
-                
-       
-            
-        } catch (IOException e){
-            
-        }
-        
+
+    public static void readyCollegeTable() {
+        String query = """
+                CREATE TABLE IF NOT EXISTS colleges (
+                    college_code VARCHAR(20) PRIMARY KEY,
+                    college_name VARCHAR(100) NOT NULL
+                )
+                """;
+
+        executeQuery(query);
     }
-    
-    public static void readyProgramDataCsv(){
-        
-         try{
-            
-            File programData = new File("ProgramData.csv");
-            Main.programDataFilePath = programData.getAbsolutePath();
-            
-            FileWriter write = new FileWriter(programData, true);
-            Scanner scan = new Scanner(programData);
-            
-            int count = 0;
-            while (scan.hasNextLine()) {
-                count++;
-                break;
-            }
-        
-            
-            if(programData.exists() && count == 0){
-                write.write(Main.END_LINE);
-                write.close();
-            }
-   
-            
-        } catch (IOException e){
-            
-        }
+
+    public static void readyProgramTable() {
+        String query = """
+                CREATE TABLE IF NOT EXISTS programs (
+                    program_code VARCHAR(20) PRIMARY KEY,
+                    program_name VARCHAR(100) NOT NULL,
+                    college_code VARCHAR(20),
+                    FOREIGN KEY (college_code) REFERENCES colleges(college_code)
+                    ON UPDATE CASCADE
+                    ON DELETE SET NULL
+                )
+                """;
+
+        executeQuery(query);
     }
-    
-    public static void readyStudentDataCsv(){
-        
-        try{
-            
-            File studentData = new File("StudentData.csv");
-            Main.studentDataFilePath = studentData.getAbsolutePath();
-            
-            FileWriter write = new FileWriter(studentData, true);
-            Scanner scan = new Scanner(studentData);
-            
-            int count = 0;
-            while (scan.hasNextLine()) {
-                count++;
-                break;
-            }
-            if(studentData.exists() && count == 0){
-                write.write(Main.END_LINE);
-                write.close();
-            }
-   
-            
-        } catch (IOException e){
-            
-        }
+
+    public static void readyStudentTable() {
+        String query = """
+                CREATE TABLE IF NOT EXISTS students (
+                    id_number VARCHAR(15) PRIMARY KEY,
+                    first_name VARCHAR(50) NOT NULL,
+                    last_name VARCHAR(50) NOT NULL,
+                    year_level VARCHAR(20),
+                    gender ENUM('Male', 'Female') NOT NULL,
+                    program_code VARCHAR(20),
+                    FOREIGN KEY (program_code) REFERENCES programs(program_code)
+                    ON UPDATE CASCADE
+                    ON DELETE SET NULL
+                )
+                """;
+
+        executeQuery(query);
     }
-    
-    public static void readyYearLevelCsv(){
-        
-          try{
-            
-            File yearLevel = new File("YearLevelData.csv");
-            Main.yearLevelDataFilePath = yearLevel.getAbsolutePath();
-            
-            FileWriter write = new FileWriter(yearLevel, true);
-            Scanner scan = new Scanner(yearLevel);
-            
-            int count = 0;
-            while (scan.hasNextLine()) {
-                count++;
-                break;
-            }
-            
-            if(yearLevel.exists() && count == 0){
-                write.write("First Year \n");
-                write.write("Second Year \n");
-                write.write("Third Year \n");
-                write.write("Fourth Year \n");
-                write.write("Fifth Year \n");
-                write.write("Sixth Year \n");
-                write.close();
-            }
-   
-            
-        } catch (IOException e){
-            
+
+    public static void readyYearLevelTable() {
+        String query = """
+                CREATE TABLE IF NOT EXISTS year_levels (
+                    year_level VARCHAR(20) PRIMARY KEY
+                )
+                """;
+
+        executeQuery(query);
+
+        // Insert default year levels if the table is empty
+        String insertQuery = """
+                INSERT IGNORE INTO year_levels (year_level) VALUES
+                ('First Year'), ('Second Year'), ('Third Year'),
+                ('Fourth Year'), ('Fifth Year'), ('Sixth Year')
+                """;
+
+        executeQuery(insertQuery);
+    }
+
+    public static void readyYearsTable() {
+        String query = """
+                CREATE TABLE IF NOT EXISTS years (
+                    year VARCHAR(20) PRIMARY KEY
+                )
+                """;
+
+        executeQuery(query);
+
+        // Insert default years if the table is empty
+        String insertQuery = """
+                INSERT IGNORE INTO years (year) VALUES
+                ('2024'), ('2025')
+                """;
+
+        executeQuery(insertQuery);
+    }
+
+    private static void executeQuery(String query) {
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             Statement statement = connection.createStatement()) {
+
+            statement.execute(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-      
     }
 }

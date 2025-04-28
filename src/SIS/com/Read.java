@@ -1,180 +1,115 @@
-
 package SIS.com;
 
 import SIS.Main;
 import SIS.com.objects.College;
 import SIS.com.objects.Program;
 import SIS.com.objects.Student;
-import java.io.*;
-import java.util.*;
+
+import java.sql.*;
 
 public class Read {
-    
-    public static void readDataCsv(){
+
+    public static void readDataFromDatabase() {
         readCollegeData();
         readProgramData();
         readStudentData();
         readYearLevel();
         readYear();
     }
-    public static void readCollegeData(){
-        
-        try{
-            File collegeData = new File(Main.collegeDataFilePath);
-            Scanner scan = new Scanner(collegeData);
-            
-          
-            while(scan.hasNextLine()){
-                
-                
-                String collegeDataFormat[] = new String[Main.COLLEGEDATA_FORMAT];
-                String data;
-                
-                data = scan.nextLine();
-                
-                if(data.equals(Main.END_LINE)){
-                    Main.collegeData.add(new College("END"));
-                    break;
-                }
-                
-                collegeDataFormat = data.split(",");
-                Main.collegeData.add(new College(collegeDataFormat[0], collegeDataFormat[1]));
-                
-                
+
+    public static void readCollegeData() {
+        String query = "SELECT college_code, college_name FROM colleges";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String collegeCode = resultSet.getString("college_code");
+                String collegeName = resultSet.getString("college_name");
+                Main.collegeData.add(new College(collegeCode, collegeName));
             }
-            scan.close();
 
-            
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch (IOException e){
-            
-        }
-        
-        
-        
-        
-        
     }
-    
-     public static void readProgramData(){
-        
-        try{
-            File programData = new File(Main.programDataFilePath);
-            Scanner scan = new Scanner(programData);
-            
-           
-            while(scan.hasNextLine()){
-                
-                
-                String programDataFormat[] = new String[Main.PROGRAMDATA_FORMAT];
-                String data;
-                
-                data = scan.nextLine();
-                
-                if(data.equals(Main.END_LINE)){
-                    Main.programData.add(new Program(Main.END));
-                    break;
-                }
-                
-                programDataFormat = data.split(",");
-    
-                Main.programData.add(new Program(programDataFormat[0], programDataFormat[1], programDataFormat[2]));
-              
+
+    public static void readProgramData() {
+        String query = "SELECT program_code, program_name, college_code FROM programs";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String programCode = resultSet.getString("program_code");
+                String programName = resultSet.getString("program_name");
+                String collegeCode = resultSet.getString("college_code");
+                Main.programData.add(new Program(programCode, programName, collegeCode));
             }
-            scan.close();
 
-            
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch (IOException e){
-            
-        }
-        
-        
-        
-        
-        
     }
-    
-    public static void readStudentData(){
-        
-        try{
-            File studentData = new File(Main.studentDataFilePath);
-            Scanner scan = new Scanner(studentData);
-            
-   
-            while(scan.hasNextLine()){
-                
-                
-                String studentDataFormat[] = new String[Main.STUDENTDATA_FORMAT];
-                String data;
-                
-                data = scan.nextLine();
-                
-                if(data.equals(Main.END_LINE)){
-                    Main.studentData.add(new Student(Main.END));
-                    break;
-                }
-                
-                studentDataFormat = data.split(",");
-                Main.studentData.add(new Student(studentDataFormat[0], studentDataFormat[1], studentDataFormat[2], studentDataFormat[3], studentDataFormat[4], studentDataFormat[5]));
 
-             
+    public static void readStudentData() {
+        String query = "SELECT id_number, first_name, last_name, year_level, gender, program_code FROM students";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String idNumber = resultSet.getString("id_number");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String yearLevel = resultSet.getString("year_level");
+                String gender = resultSet.getString("gender");
+                String programCode = resultSet.getString("program_code");
+                Main.studentData.add(new Student(idNumber, firstName, lastName, yearLevel, gender, programCode));
             }
-            scan.close();
 
-            
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch (IOException e){
-            
-        }
-        
-        
-        
-        
-        
     }
-    
-    public static void readYearLevel(){
-        
-        try{
-            
-            File yearLevelData = new File(Main.yearLevelDataFilePath);
-            Scanner scan = new Scanner(yearLevelData);
-            
+
+    public static void readYearLevel() {
+        String query = "SELECT year_level FROM year_levels";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
             int count = 0;
-            while(scan.hasNextLine()){
-                
-                Main.YearLevel[count] = scan.nextLine();
+            while (resultSet.next()) {
+                Main.YearLevel[count] = resultSet.getString("year_level");
                 count++;
-                
             }
-            Main.YearLevel[count + 1] = Main.END;
-            
-        }catch(IOException e){
-            
+            Main.YearLevel[count] = Main.END;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        
     }
-    
-    public static void readYear(){
-        
-        try{
-            
-            File yearData = new File("src/SIS/com/data/Year.csv");
-            Scanner scan = new Scanner(yearData);
-            
+
+    public static void readYear() {
+        String query = "SELECT year FROM years";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
             int count = 0;
-            while(scan.hasNextLine()){
-                
-                Main.Years[count] = scan.nextLine();
+            while (resultSet.next()) {
+                Main.Years[count] = resultSet.getString("year");
                 count++;
-                
             }
-            
-        }catch(IOException e){
-            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        
     }
-    
 }

@@ -1,132 +1,162 @@
-
 package SIS.com;
 
-
-import java.io.*;
 import SIS.Main;
+import SIS.com.objects.College;
+import SIS.com.objects.Program;
+import SIS.com.objects.Student;
+
+import java.sql.*;
 
 public class Write {
-    
-    public static void writeCollege(){
-        
-        try{
 
-            boolean append = false;
-            int indicator;
-            int count;
+    public static void writeCollege() {
+        String query = "INSERT INTO colleges (college_code, college_name) VALUES (?, ?) " +
+                       "ON DUPLICATE KEY UPDATE college_name = VALUES(college_name)";
 
-            File collegeData = new File(Main.collegeDataFilePath);
-            FileWriter write = new FileWriter(collegeData, append);
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            count = 0;
-            indicator = 0;
-
-            while(indicator < Main.collegeData.size()){
-                
-                indicator++;
-                if(Main.END.equals(Main.collegeData.get(count).getCollegeCode())){
+            for (College college : Main.collegeData) {
+                if (Main.END.equals(college.getCollegeCode())) {
                     break;
-                } 
-                
-
-                if(indicator == 1){
-                        append = true;
-                        write.close();
-                        write = new FileWriter(collegeData, append);
                 }
-                
-              write.write(Main.collegeData.get(count).collegeData() + "\n");
-                count++;
+
+                preparedStatement.setString(1, college.getCollegeCode());
+                preparedStatement.setString(2, college.getCollegeName());
+                preparedStatement.executeUpdate();
             }
-            
-            write.write(Main.END_LINE);
-            write.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch(IOException e){
-            
-        }
+    }
 
-   }
-    
-    public static void writeProgram(){
-        
-        try{
+    public static void writeProgram() {
+        String query = "INSERT INTO programs (program_code, program_name, college_code) VALUES (?, ?, ?) " +
+                       "ON DUPLICATE KEY UPDATE program_name = VALUES(program_name), college_code = VALUES(college_code)";
 
-            boolean append = false;
-            int indicator;
-            int count;
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            File programData = new File(Main.programDataFilePath);
-            FileWriter write = new FileWriter(programData, append);
-
-            count = 0;
-            indicator = 0;
-
-            while(indicator < Main.programData.size()){
-                
-                indicator++;
-                if(Main.END.equals(Main.programData.get(count).getProgramCode())){
+            for (Program program : Main.programData) {
+                if (Main.END.equals(program.getProgramCode())) {
                     break;
-                } 
-                
-
-                if(indicator == 1){
-                        append = true;
-                        write.close();
-                        write = new FileWriter(programData, append);
                 }
-                
-              write.write(Main.programData.get(count).programData() + "\n");
-                count++;
+
+                preparedStatement.setString(1, program.getProgramCode());
+                preparedStatement.setString(2, program.getProgramName());
+                preparedStatement.setString(3, program.getCollegeCode());
+                preparedStatement.executeUpdate();
             }
-            
-            write.write(Main.END_LINE);
-            write.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch(IOException e){
-            
-        }
+    }
 
-   }
-    
-     public static void writeStudent(){
-        
-        try{
+    public static void writeStudent() {
+        String query = "INSERT INTO students (id_number, first_name, last_name, year_level, gender, program_code) " +
+                       "VALUES (?, ?, ?, ?, ?, ?) " +
+                       "ON DUPLICATE KEY UPDATE first_name = VALUES(first_name), last_name = VALUES(last_name), " +
+                       "year_level = VALUES(year_level), gender = VALUES(gender), program_code = VALUES(program_code)";
 
-            boolean append = false;
-            int indicator;
-            int count;
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            File studentData = new File(Main.studentDataFilePath);
-            FileWriter write = new FileWriter(studentData, append);
-
-            count = 0;
-            indicator = 0;
-            
-            while(indicator < Main.studentData.size()){
-                
-                indicator++;
-                if(Main.END.equals(Main.studentData.get(count).getIdNum())){
+            for (Student student : Main.studentData) {
+                if (Main.END.equals(student.getIdNum())) {
                     break;
-                } 
-                
-
-                if(indicator == 1){
-                        append = true;
-                        write.close();
-                        write = new FileWriter(studentData, append);
                 }
-                
-              write.write(Main.studentData.get(count).studentData() + "\n");
-                count++;
-            }
-            
-            write.write(Main.END_LINE);
-            write.close();
-        }
-        catch(IOException e){
-            
-        }
 
-   }
+                preparedStatement.setString(1, student.getIdNum());
+                preparedStatement.setString(2, student.getFirstName());
+                preparedStatement.setString(3, student.getLastName());
+                preparedStatement.setString(4, student.getYearLevel());
+                preparedStatement.setString(5, student.getGender());
+                preparedStatement.setString(6, student.getProgramCode());
+                preparedStatement.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteStudent(String idNumber) throws SQLException {
+        String query = "DELETE FROM students WHERE id_number = ?";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, idNumber);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void deleteCollege(String collegeCode) throws SQLException {
+        String query = "DELETE FROM colleges WHERE college_code = ?";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, collegeCode);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void deleteProgram(String programCode) throws SQLException {
+        String query = "DELETE FROM programs WHERE program_code = ?";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, programCode);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void updateCollege(String oldCollegeCode, String newCollegeCode, String newCollegeName) throws SQLException {
+        String query = "UPDATE colleges SET college_code = ?, college_name = ? WHERE college_code = ?";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, newCollegeCode);
+            preparedStatement.setString(2, newCollegeName);
+            preparedStatement.setString(3, oldCollegeCode);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void updateProgram(String oldProgramCode, String newProgramCode, String newProgramName, String collegeCode) throws SQLException {
+        String query = "UPDATE programs SET program_code = ?, program_name = ?, college_code = ? WHERE program_code = ?";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, newProgramCode);
+            preparedStatement.setString(2, newProgramName);
+            preparedStatement.setString(3, collegeCode);
+            preparedStatement.setString(4, oldProgramCode);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void updateStudent(String oldIdNumber, String newIdNumber, String firstName, String lastName, String yearLevel, String gender, String programCode) throws SQLException {
+        String query = "UPDATE students SET id_number = ?, first_name = ?, last_name = ?, year_level = ?, gender = ?, program_code = ? WHERE id_number = ?";
+
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, newIdNumber);
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, lastName);
+            preparedStatement.setString(4, yearLevel);
+            preparedStatement.setString(5, gender);
+            preparedStatement.setString(6, programCode);
+            preparedStatement.setString(7, oldIdNumber);
+            preparedStatement.executeUpdate();
+        }
+    }
+
 }
