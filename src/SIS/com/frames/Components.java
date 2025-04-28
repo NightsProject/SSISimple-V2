@@ -11,9 +11,12 @@ import java.util.function.Predicate;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
 public class Components extends MainWindow{
-    
+    private static boolean shouldRefresh = true; // Default to true
+
 public static void showStudentDialog(){
+
     AddStudentDialog.setLocationByPlatform(true);
     
     //add the items for Year Level
@@ -988,20 +991,32 @@ public static void confirmButtonStudentDialog(){
 }
 
 public static void formWindowActivated(){
+    firstnameColor.setVisible(false);
+    lastnameColor.setVisible(false);
+    idColor.setVisible(false);
+    programColor.setVisible(false);
+    programNameColor.setVisible(false);
+
+    if (!shouldRefresh) {
+        return; // Skip refreshing if the flag is false
+    }
+
+    if (!saveButton.isVisible() && !cancel.isVisible()) {
+     
     //student Table Part
     saveButton.setVisible(false);
     cancel.setVisible(false); 
-    idColor.setVisible(false);
-    firstnameColor.setVisible(false);
-    lastnameColor.setVisible(false);
     comboBoxYearL.setVisible(false);
-    //program Table part
-    saveProgram.setVisible(false);
-    cancelProgram.setVisible(false);
-    comboBoxCCP.setVisible(false);
+    }
+
+    if(!saveProgram.isVisible() && !cancelProgram.isVisible()){
+          //program Table part
+        saveProgram.setVisible(false);
+        cancelProgram.setVisible(false);
+        comboBoxCCP.setVisible(false);  
+    }
+  
     
-    programColor.setVisible(false);
-    programNameColor.setVisible(false);
     
        
     collegeColor.setVisible(false);
@@ -1030,17 +1045,16 @@ public static void saveProgramClicked(){
         //check program Code if blank
         if(programCodeP.getText().isBlank()){
             checkpoint = false;
-              programColor.setVisible(true);
-              programColor.setToolTipText("It's Empty");
+            JOptionPane.showMessageDialog(null, "Program Code cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+  
         } else {
             
             String programCode = programCodeP.getText().toLowerCase();
             
             if(!programCode.matches("[a-zA-Z ]+")){
                 checkpoint = false;
-                programColor.setVisible(true);
-                programColor.setToolTipText("Alphabetical Letters Only");
-          
+                JOptionPane.showMessageDialog(null, "Program Code must contain only alphabetical letters.", "Warning", JOptionPane.WARNING_MESSAGE);
+ 
             } else {
                 
                 
@@ -1057,8 +1071,8 @@ public static void saveProgramClicked(){
                 
                     if(programCode.equals(Main.programData.get(i).getProgramCode().toLowerCase())){
                         checkpoint = false;
-                        programColor.setVisible(true);
-                        programColor.setToolTipText("Program Code Exists");
+                        JOptionPane.showMessageDialog(null, "Program Code already exists.", "Warning", JOptionPane.WARNING_MESSAGE);
+ 
                     }
                     }
           
@@ -1073,19 +1087,19 @@ public static void saveProgramClicked(){
         //check program Name
         if(programCodeN.getText().isBlank()){
             checkpoint = false;
-            programNameColor.setVisible(true);
-            programNameColor.setToolTipText("* It's Empty");
+            JOptionPane.showMessageDialog(null, "Program Name cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+  
         } else {
             
             String programName = programCodeN.getText();
             if(!programName.matches("[a-zA-Z ]+")){
                checkpoint = false;
-               programNameColor.setVisible(true);
-               programNameColor.setToolTipText("* Alphabetical Letters Only");
+               JOptionPane.showMessageDialog(null, "Program Name must contain only alphabetical letters.", "Warning", JOptionPane.WARNING_MESSAGE);
+ 
             }
             
         }
-        
+        shouldRefresh = false;
         
         if (checkpoint) {
             int confirm = JOptionPane.showConfirmDialog(null,
@@ -1122,7 +1136,7 @@ public static void saveProgramClicked(){
     
                     Components.loadProgramData();
                     Components.loadStudentData();
-    
+                    shouldRefresh = true;
                     JOptionPane.showMessageDialog(null, "Program updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "Error updating program: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1237,15 +1251,12 @@ public static void cancelStudentClicked(){
     idColor.setVisible(false);
     firstnameColor.setVisible(false);
     lastnameColor.setVisible(false);
-    saveButton.setEnabled(false);
-    cancel.setEnabled(false);
     saveButton.setVisible(false);
 
     delete.setVisible(true);
     editButton.setVisible(true);
     saveButton.setVisible(false);
 
-    studentTable.setEnabled(true);
     SSIS.setEnabled(true);
 
     idNumberField.setFocusable(false);
@@ -1282,13 +1293,15 @@ public static void saveStudentClicked(){
       //unique id check
     if(idNumberField.getText().isBlank()){
         checkpoint = false;
-     
+        JOptionPane.showMessageDialog(null, "ID Number cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+  
         
     } else {
         
         if(!idNumberField.getText().matches("\\d{4}-\\d{4}")){
             checkpoint = false;
-            idColor.setVisible(true);
+            JOptionPane.showMessageDialog(null, "ID Number must follow the format YYYY-NNNN.", "Warning", JOptionPane.WARNING_MESSAGE);
+   
          
         } else {
 
@@ -1305,7 +1318,8 @@ public static void saveStudentClicked(){
         
                     if(idNumberField.getText().equals(Main.studentData.get(i).getIdNum())){
                         checkpoint = false;
-                        idColor.setVisible(true);
+                        JOptionPane.showMessageDialog(null, "ID Number already exists.", "Warning", JOptionPane.WARNING_MESSAGE);
+   
                
                     }
                     }   
@@ -1322,14 +1336,15 @@ public static void saveStudentClicked(){
     //first name check
     if(firstNameLabel.getText().isBlank()){
         checkpoint = false;
-        firstnameColor.setVisible(true);
+        JOptionPane.showMessageDialog(null, "First Name cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+  
        
     } else {
         String firstname = firstNameLabel.getText();
         if(!firstname.matches("[a-zA-Z ]+")){
            checkpoint = false;
-           firstnameColor.setVisible(true);
-       
+           JOptionPane.showMessageDialog(null, "First Name must contain only alphabetical letters.", "Warning", JOptionPane.WARNING_MESSAGE);
+   
         } 
     }
  
@@ -1340,12 +1355,13 @@ public static void saveStudentClicked(){
     //lastname check
     if(lastNameLabel.getText().isBlank()){
         checkpoint = false;
-            lastnameColor.setVisible(true);
+        JOptionPane.showMessageDialog(null, "Last Name cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+ 
     } else {
         String lastname = lastNameLabel.getText();
         if(!lastname.matches("[a-zA-Z]+")){
             checkpoint = false;
-            lastnameColor.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Last Name must contain only alphabetical letters.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
     }
    
@@ -1357,6 +1373,8 @@ public static void saveStudentClicked(){
     //firstname and lastname check
     if(firstNameLabel.getText().isBlank() && lastNameLabel.getText().isBlank()){
         checkpoint = false;
+        JOptionPane.showMessageDialog(null, "Fist Name and Last Name should not be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+
     } else {
         
 
@@ -1376,14 +1394,16 @@ public static void saveStudentClicked(){
                 //check if unique
                 if(firstname.equals(Main.studentData.get(i).getFirstName().toLowerCase()) && lastname.equals(Main.studentData.get(i).getLastName().toLowerCase())){
                     checkpoint = false;
-                    firstnameColor.setVisible(true);
-                    lastnameColor.setVisible(true);
+                    JOptionPane.showMessageDialog(null, "First Name and Last Name already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+
                 }
             }
         }
 
     }
-   
+
+    shouldRefresh = false;
+
     
     if (checkpoint) {
     int confirm = JOptionPane.showConfirmDialog(null,
@@ -1430,6 +1450,7 @@ public static void saveStudentClicked(){
             Components.clearStudentFields();
 
             Components.loadStudentData();
+            shouldRefresh = true;
 
             JOptionPane.showMessageDialog(null, "Student updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
@@ -1480,7 +1501,6 @@ public static void editStudentClicked(){
         cancel.setVisible(true);
         
         studentTable.setFocusable(false);
-        studentTable.setEnabled(false);
         SSIS.setEnabled(false);
 
 
@@ -1548,9 +1568,8 @@ public static void saveCollegeClicked(){
             
             if(!collegeCode.matches("[a-zA-Z ]+")){
                 checkpoint = false;
-                collegeColor.setVisible(true);
-                collegeColor.setToolTipText("Alphabetical Letters Only");
-          
+                JOptionPane.showMessageDialog(null, "College Code must contain only alphabetical letters.", "Warning", JOptionPane.WARNING_MESSAGE);
+
             } else {
                 
                 int selectedRow = collegeTable.getSelectedRow();
@@ -1566,8 +1585,8 @@ public static void saveCollegeClicked(){
                 
                 if(collegeCode.equals(Main.collegeData.get(i).getCollegeCode().toLowerCase())){
                     checkpoint = false;
-                    collegeColor.setVisible(true);
-                    collegeColor.setToolTipText("College Code Exists");
+                    JOptionPane.showMessageDialog(null, "College Code already exists.", "Warning", JOptionPane.WARNING_MESSAGE);
+
                 }
         
                 }
@@ -1580,20 +1599,20 @@ public static void saveCollegeClicked(){
         //college name check
         if(collegeCodeN.getText().isBlank()){
             checkpoint = false;
-              collegeName.setVisible(true);
-              collegeName.setToolTipText("It's Empty");
+            JOptionPane.showMessageDialog(null, "College Name cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+ 
         } else {
             
             String collegeNameC = collegeCodeN.getText();
             if(!collegeNameC.matches("[a-zA-Z ]+")){
                 checkpoint = false;
-                collegeName.setVisible(true);
-                collegeName.setToolTipText("Alphabetical Letters Only");
+                JOptionPane.showMessageDialog(null, "College Name must contain only alphabetical letters.", "Warning", JOptionPane.WARNING_MESSAGE);
+   
             }
             
         }
         
-        
+        shouldRefresh = false;
         
         if (checkpoint) {
             int confirm = JOptionPane.showConfirmDialog(null,
@@ -1614,7 +1633,7 @@ public static void saveCollegeClicked(){
                     collegeCodeN.setFocusable(false);
     
                     SSIS.setEnabled(true);
-                    collegeTable.setEnabled(true);
+                 
                     collegeTable.setFocusable(true);
     
                     Components.saveCollegeEdit();
@@ -1629,7 +1648,9 @@ public static void saveCollegeClicked(){
     
                     Components.loadProgramData();
                     Components.loadCollegeData();
-    
+
+                    shouldRefresh = true;
+                    
                     JOptionPane.showMessageDialog(null, "College updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "Error updating college: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1690,7 +1711,7 @@ public static void editCollegeClicked(){
         cancelCollege.setVisible(true);
 
         collegeTable.setFocusable(false);
-        collegeTable.setEnabled(false);
+       
         SSIS.setEnabled(false);
 
         collegeCodeC.setEditable(true);
