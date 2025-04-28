@@ -82,6 +82,47 @@ public class Write {
         }
     }
 
+    public static void writeStudent(String idNumber, String firstName, String lastName, String yearLevel, String gender, String programCode) {
+        // Set program_code to "none" if it is invalid
+        if (!isProgramCodeValid(programCode)) {
+            System.err.println("Warning: Program code " + programCode + " does not exist. Setting program_code to 'none'.");
+            programCode = "none";
+        }
+
+        String query = "INSERT INTO students (id_number, first_name, last_name, year_level, gender, program_code) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, idNumber);
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, lastName);
+            preparedStatement.setString(4, yearLevel);
+            preparedStatement.setString(5, gender);
+            preparedStatement.setString(6, programCode);
+
+            preparedStatement.executeUpdate();
+            System.out.println("Student added successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isProgramCodeValid(String programCode) {
+        String query = "SELECT COUNT(*) FROM programs WHERE program_code = ?";
+        try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, programCode);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void deleteStudent(String idNumber) throws SQLException {
         String query = "DELETE FROM students WHERE id_number = ?";
 
@@ -143,6 +184,12 @@ public class Write {
     }
 
     public static void updateStudent(String oldIdNumber, String newIdNumber, String firstName, String lastName, String yearLevel, String gender, String programCode) throws SQLException {
+        // Set program_code to "none" if it is invalid
+        if (!isProgramCodeValid(programCode)) {
+            System.err.println("Warning: Program code " + programCode + " does not exist. Setting program_code to 'none'.");
+            programCode = "none";
+        }
+
         String query = "UPDATE students SET id_number = ?, first_name = ?, last_name = ?, year_level = ?, gender = ?, program_code = ? WHERE id_number = ?";
 
         try (Connection connection = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
@@ -155,7 +202,9 @@ public class Write {
             preparedStatement.setString(5, gender);
             preparedStatement.setString(6, programCode);
             preparedStatement.setString(7, oldIdNumber);
+
             preparedStatement.executeUpdate();
+            System.out.println("Student updated successfully.");
         }
     }
 

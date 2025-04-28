@@ -41,6 +41,14 @@ public class Initialize {
                 """;
 
         executeQuery(query);
+
+        // Insert the "none" program if it does not exist
+        String insertQuery = """
+                INSERT IGNORE INTO programs (program_code, program_name, college_code) VALUES
+                ('none', 'No Program', NULL)
+                """;
+
+        executeQuery(insertQuery);
     }
 
     public static void readyStudentTable() {
