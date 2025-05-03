@@ -1006,7 +1006,7 @@ public class MainWindow extends javax.swing.JFrame {
         programDetailsPanel.add(programCodePJPanel, gbc);
 
 
-        JPanel programNamePJPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 51, 0)); 
+        JPanel programNamePJPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0)); 
         programNamePJPanel.setBackground(bgMedium);
         idLabel19 = new JLabel("NAME");
         idLabel19.setForeground(accentColor);
@@ -1019,8 +1019,8 @@ public class MainWindow extends javax.swing.JFrame {
         programCodeN.setBackground(bgDark);
         programCodeN.setBorder(BorderFactory.createMatteBorder(0, 0, 7, 0, accentColor));
         programCodeN.setHorizontalAlignment(JTextField.CENTER); // Center text horizontally
-        programCodeN.setPreferredSize(new Dimension(150, 30)); // Width: 176, Height: 30
-        programCodeN.setMaximumSize(new Dimension(150, 30));   // Ensure it doesn't exceed this size
+        programCodeN.setPreferredSize(new Dimension(225, 30)); // Width: 176, Height: 30
+        programCodeN.setMaximumSize(new Dimension(225, 30));   // Ensure it doesn't exceed this size
      
         programNamePJPanel.add(programCodeN);
        
@@ -1248,7 +1248,7 @@ public class MainWindow extends javax.swing.JFrame {
         gbc.weightx = 1.0;
         collegeDetailsPanel.add(collegeCodePanel, gbc);
 
-        JPanel collegeNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 47, 0)); 
+        JPanel collegeNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0)); 
         collegeNamePanel.setBackground(bgMedium);
         idLabel17 = new JLabel("NAME");
         idLabel17.setForeground(accentColor);
@@ -1261,8 +1261,8 @@ public class MainWindow extends javax.swing.JFrame {
         collegeCodeN.setBackground(bgDark);
         collegeCodeN.setBorder(BorderFactory.createMatteBorder(0, 0, 7, 0, accentColor));
         collegeCodeN.setHorizontalAlignment(JTextField.CENTER); // Center text horizontally
-        collegeCodeN.setPreferredSize(new Dimension(140, 30)); // Width: 176, Height: 30
-        collegeCodeN.setMaximumSize(new Dimension(140, 30));   // Ensure it doesn't exceed this size
+        collegeCodeN.setPreferredSize(new Dimension(225, 30)); // Width: 176, Height: 30
+        collegeCodeN.setMaximumSize(new Dimension(225, 30));   // Ensure it doesn't exceed this size
         collegeNamePanel.add(collegeCodeN);
         gbc.gridy++;
         collegeDetailsPanel.add(collegeNamePanel, gbc);
