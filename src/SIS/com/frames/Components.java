@@ -26,6 +26,9 @@ public static void showStudentDialog(){
         if(Main.YearLevel[i] == null){
             break;
         }
+        if(Main.YearLevel[i].equals("END")){
+            break;
+        }
         comboBoxYL.addItem(Main.YearLevel[i]);
     }
     //-----------------
@@ -373,20 +376,26 @@ public static void loadCollegeData(){
         }
         count++;
     }
-   
-    
+
+
     Object[][] collegeData = new Object[count][Main.COLLEGEDATA_FORMAT];
 
+    int rowIndex = 0;
     for(int i = 0; i <  Main.collegeData.size(); i++){
-        
-      
-        if(Main.END.equals(Main.collegeData.get(i).getCollegeCode())){
+
+        String code = Main.collegeData.get(i).getCollegeCode();
+        if("none".equals(code)){
+            continue;
+        }
+
+        if(Main.END.equals(code)){
             break;
         }
         
-       collegeData[i][0] = Main.collegeData.get(i).getCollegeCode();
-       collegeData[i][1] = Main.collegeData.get(i).getCollegeName();             
-              
+       collegeData[rowIndex][0] = Main.collegeData.get(i).getCollegeCode();
+       collegeData[rowIndex][1] = Main.collegeData.get(i).getCollegeName();             
+        
+       rowIndex++;
     }
     
     loadToCollegeTable(collegeData);
@@ -472,9 +481,10 @@ public static void loadProgramData(){
         if(Main.END.equals(Main.programData.get(count).getProgramCode())){
             break;
         }
+        
         count++;
     }
-    
+
  
  
     
@@ -482,7 +492,9 @@ public static void loadProgramData(){
 
     for(int i = 0; i <  Main.programData.size(); i++){
         
-      
+        if("none".equals(Main.programData.get(i).getProgramCode())){
+            continue;
+        }
         if(Main.END.equals(Main.programData.get(i).getProgramCode())){
             break;
         }
@@ -991,11 +1003,7 @@ public static void confirmButtonStudentDialog(){
 }
 
 public static void formWindowActivated(){
-    firstnameColor.setVisible(false);
-    lastnameColor.setVisible(false);
-    idColor.setVisible(false);
-    programColor.setVisible(false);
-    programNameColor.setVisible(false);
+    
 
     if (!shouldRefresh) {
         return; // Skip refreshing if the flag is false
@@ -1016,11 +1024,6 @@ public static void formWindowActivated(){
         comboBoxCCP.setVisible(false);  
     }
   
-    
-    
-       
-    collegeColor.setVisible(false);
-    collegeName.setVisible(false);
    
     Components.loadStudentData(); // Use Components method
     Components.loadCollegeData(); // Use Components method
@@ -1039,8 +1042,6 @@ public static void saveProgramClicked(){
         
         boolean checkpoint = true;
         
-        programColor.setVisible(false);
-        programNameColor.setVisible(false);
         
         //check program Code if blank
         if(programCodeP.getText().isBlank()){
@@ -1124,8 +1125,7 @@ public static void saveProgramClicked(){
                     programCodeP.setFocusable(false);
                     programCodeN.setFocusable(false);
                     collegeCodeP.setFocusable(false);
-    
-                    SSIS.setEnabled(true);
+
                     Components.saveProgramEdit();
     
                     Write.updateProgram(oldProgramCode, programCodeP.getText(), programCodeN.getText(), (String) comboBoxCCP.getSelectedItem()); // Update the database
@@ -1177,8 +1177,6 @@ public static void editProgram(){
 
 public static void cancelProgramClicked(){
 
-    programColor.setVisible(false);
-    programNameColor.setVisible(false);
     
     cancelProgram.setVisible(false);
     saveProgram.setVisible(false);
@@ -1187,7 +1185,6 @@ public static void cancelProgramClicked(){
     editProgram.setVisible(true);
     deleteProgram.setVisible(true);
     collegeCodeP.setVisible(true);
-     SSIS.setEnabled(true);
     
     programCodeP.setFocusable(false);
     programCodeN.setFocusable(false);
@@ -1248,16 +1245,11 @@ public static void deleteProgramClicked(){
 
 public static void cancelStudentClicked(){
 
-    idColor.setVisible(false);
-    firstnameColor.setVisible(false);
-    lastnameColor.setVisible(false);
-    saveButton.setVisible(false);
 
     delete.setVisible(true);
     editButton.setVisible(true);
     saveButton.setVisible(false);
-
-    SSIS.setEnabled(true);
+    cancel.setVisible(false);
 
     idNumberField.setFocusable(false);
     firstNameLabel.setFocusable(false);
@@ -1275,7 +1267,7 @@ public static void cancelStudentClicked(){
     maleG.setVisible(false);
     femaleG.setVisible(false);
 
-    idColor.setOpaque(false);
+ 
     Components.getStudentTableRowData(); // Use Components method
 
 }
@@ -1284,10 +1276,7 @@ public static void cancelStudentClicked(){
 public static void saveStudentClicked(){
 
     boolean checkpoint = true;
-  
-    idColor.setVisible(false);
-    firstnameColor.setVisible(false);
-    lastnameColor.setVisible(false);
+
 
     
       //unique id check
@@ -1424,8 +1413,7 @@ public static void saveStudentClicked(){
 
             studentTable.setFocusable(true);
             studentTable.setEnabled(true);
-            SSIS.setEnabled(true);
-
+      
             idNumberField.setFocusable(false);
             firstNameLabel.setFocusable(false);
             lastNameLabel.setFocusable(false);
@@ -1501,7 +1489,6 @@ public static void editStudentClicked(){
         cancel.setVisible(true);
         
         studentTable.setFocusable(false);
-        SSIS.setEnabled(false);
 
 
         idNumberField.setFocusable(true);
@@ -1518,20 +1505,44 @@ public static void editStudentClicked(){
         maleG.setVisible(true);
         femaleG.setVisible(true);
 
+        int selectedRow = studentTable.getSelectedRow();
+        String yearLevel = (String) studentTable.getValueAt(selectedRow, 3);
+        String gender = (String) studentTable.getValueAt(selectedRow, 4);
+        String programCode = (String) studentTable.getValueAt(selectedRow, 5);
         //load Academic Year
         comboBoxYearL.removeAllItems();
+        comboBoxYearL.addItem(yearLevel);
         for(int i = 0; i < Main.YearLevel.length; i++){
+
+            if(Main.YearLevel[i] == yearLevel){
+                continue;
+            }
 
             if(Main.YearLevel[i] == null){
                 break;
             }
+            if(Main.YearLevel[i] == "END"){
+                break;
+            }
+            
 
             comboBoxYearL.addItem(Main.YearLevel[i]);
         }
 
+        //gender selection
+        if(gender == "Female"){
+            femaleG.setSelected(true);
+        } else {
+            maleG.setSelected(true);
+        }
+
         comboBoxSP.removeAllItems();
+        comboBoxSP.addItem(programCode);
         for(int i = 0; i < Main.programData.size(); i++){
 
+            if(programCode.equals(Main.programData.get(i).getProgramCode())){
+                continue;
+            }
             if(Main.END.equals(Main.programData.get(i).getProgramCode())){
                 break;
             }
@@ -1555,7 +1566,6 @@ public static void saveCollegeClicked(){
         boolean checkpoint = true;
 
         
-        collegeColor.setVisible(false);
         collegeName.setVisible(false);
         
           //check college Code if blank
@@ -1632,7 +1642,7 @@ public static void saveCollegeClicked(){
                     collegeCodeC.setFocusable(false);
                     collegeCodeN.setFocusable(false);
     
-                    SSIS.setEnabled(true);
+                   
                  
                     collegeTable.setFocusable(true);
     
@@ -1712,7 +1722,6 @@ public static void editCollegeClicked(){
 
         collegeTable.setFocusable(false);
        
-        SSIS.setEnabled(false);
 
         collegeCodeC.setEditable(true);
         collegeCodeC.setFocusable(true);
@@ -1725,14 +1734,13 @@ public static void editCollegeClicked(){
 }
 public static void cancelCollegeClicked(){
       
-    collegeColor.setVisible(false);
+
     collegeName.setVisible(false);
     cancelCollege.setVisible(false);
     saveCollege.setVisible(false);
 
     editCollege.setVisible(true);
     deleteCollege.setVisible(true);
-    SSIS.setEnabled(true);
     
     collegeCodeC.setFocusable(false);
     collegeCodeN.setFocusable(false);

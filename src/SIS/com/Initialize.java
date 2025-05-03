@@ -26,6 +26,14 @@ public class Initialize {
                 """;
 
         executeQuery(query);
+
+         // Insert the "none" college if it does not exist
+         String insertQuery = """
+            INSERT IGNORE INTO colleges (college_code, college_name) VALUES
+            ('none', 'No College')
+            """;
+
+    executeQuery(insertQuery);
     }
 
     public static void readyProgramTable() {
@@ -45,7 +53,7 @@ public class Initialize {
         // Insert the "none" program if it does not exist
         String insertQuery = """
                 INSERT IGNORE INTO programs (program_code, program_name, college_code) VALUES
-                ('none', 'No Program', NULL)
+                ('none', 'No Program', 'none')
                 """;
 
         executeQuery(insertQuery);
@@ -81,8 +89,8 @@ public class Initialize {
         // Insert default year levels if the table is empty
         String insertQuery = """
                 INSERT IGNORE INTO year_levels (year_level) VALUES
-                ('First Year'), ('Second Year'), ('Third Year'),
-                ('Fourth Year'), ('Fifth Year'), ('Sixth Year')
+                ('1st Year'), ('2nd Year'), ('3rd Year'),
+                ('4th Year'), ('5th Year'), ('6th Year')
                 """;
 
         executeQuery(insertQuery);
