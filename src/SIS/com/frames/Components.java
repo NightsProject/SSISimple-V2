@@ -378,6 +378,7 @@ public static void loadCollegeData(){
     }
 
 
+    count = count - 1;
     Object[][] collegeData = new Object[count][Main.COLLEGEDATA_FORMAT];
 
     int rowIndex = 0;
@@ -473,7 +474,6 @@ public static void loadToProgramTable(Object[][] program){
 //-------------------------------------------------------------------------------------------
 
 public static void loadProgramData(){
-      //load the collegetData
     
 
     int count = 0;
@@ -485,24 +485,25 @@ public static void loadProgramData(){
         count++;
     }
 
- 
- 
+    count = count - 1;
     
     Object[][] programData = new Object[count][Main.PROGRAMDATA_FORMAT];
 
+    int rowCount = 0;
     for(int i = 0; i <  Main.programData.size(); i++){
         
-        if("none".equals(Main.programData.get(i).getProgramCode())){
+        String code = Main.programData.get(i).getProgramCode();
+        if("none".equals(code)){
             continue;
         }
-        if(Main.END.equals(Main.programData.get(i).getProgramCode())){
+        if(Main.END.equals(code)){
             break;
         }
         
-       programData[i][0] = Main.programData.get(i).getProgramCode();
-       programData[i][1] = Main.programData.get(i).getProgramName();   
-       programData[i][2] = Main.programData.get(i).getCollegeCode();
-              
+       programData[rowCount][0] = Main.programData.get(i).getProgramCode();
+       programData[rowCount][1] = Main.programData.get(i).getProgramName();   
+       programData[rowCount][2] = Main.programData.get(i).getCollegeCode();
+       rowCount++;
     }
     
     loadToProgramTable(programData);
@@ -1565,8 +1566,6 @@ public static void saveCollegeClicked(){
         
         boolean checkpoint = true;
 
-        
-        collegeName.setVisible(false);
         
           //check college Code if blank
         if(collegeCodeC.getText().isBlank()){
