@@ -1487,7 +1487,7 @@ public static void editStudentClicked(){
         delete.setVisible(false);
         
         saveButton.setVisible(true);
-        cancel.setVisible(true);
+        cancel.setVisible(true);        
         
         studentTable.setFocusable(false);
 
@@ -1506,11 +1506,12 @@ public static void editStudentClicked(){
         maleG.setVisible(true);
         femaleG.setVisible(true);
 
-        int selectedRow = studentTable.getSelectedRow();
+int selectedRow = studentTable.getSelectedRow();
         String yearLevel = (String) studentTable.getValueAt(selectedRow, 3);
         String gender = (String) studentTable.getValueAt(selectedRow, 4);
         String programCode = (String) studentTable.getValueAt(selectedRow, 5);
         //load Academic Year
+        
         comboBoxYearL.removeAllItems();
         comboBoxYearL.addItem(yearLevel);
         for(int i = 0; i < Main.YearLevel.length; i++){
@@ -1734,7 +1735,6 @@ public static void editCollegeClicked(){
 public static void cancelCollegeClicked(){
       
 
-    collegeName.setVisible(false);
     cancelCollege.setVisible(false);
     saveCollege.setVisible(false);
 

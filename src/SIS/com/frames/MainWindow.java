@@ -40,7 +40,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         // **************** Initialize AddCollegeDialog ****************
-        AddCollegeDialog.setSize(280, 280);
+        AddCollegeDialog.setSize(280, 220);
         AddCollegeDialog.setResizable(false);
         AddCollegeDialog.setLocationRelativeTo(this);
         AddCollegeDialog.getContentPane().setBackground(bgDark);
@@ -144,7 +144,7 @@ public class MainWindow extends javax.swing.JFrame {
         AddCollegeDialog.getContentPane().add(addCollegePanel);
 
         // **************** Initialize AddProgramDialog ****************
-        AddProgramDialog.setSize(400, 420);
+        AddProgramDialog.setSize(400, 300);
         AddProgramDialog.setResizable(false);
         AddProgramDialog.setLocationRelativeTo(this);
         AddProgramDialog.getContentPane().setBackground(bgDark);
@@ -549,7 +549,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("SSISimple-V2");
-        setMinimumSize(new Dimension(1000, 700));
+        setMinimumSize(new Dimension(1300, 700));
         setBackground(bgDark);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -559,10 +559,30 @@ public class MainWindow extends javax.swing.JFrame {
         contentPane.setLayout(new BorderLayout());
         contentPane.setBackground(bgDark);
 
+        // Create a panel for the title
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(bgDark); // match the background if you want consistency
+        titlePanel.setPreferredSize(new Dimension(1300, 50)); // adjust height as needed
+        
+        // Create a label for the title
+        JLabel titleLabel = new JLabel("SSISimple                                                                                                                                         ");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24)); // customize font and size
+        titleLabel.setForeground(accentColor); // set text color, e.g., white
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0)); // padding: top, left, bottom, right
+        
+        ImageIcon title = new ImageIcon(getClass().getResource("/SIS/com/icons/register.png"));
+        Image img = title.getImage().getScaledInstance (40, 40, Image.SCALE_SMOOTH);
+        titleLabel.setIcon(new ImageIcon(img));
 
+        // Add the label to the panel
+        titlePanel.add(titleLabel);
+
+        // Add the panel to the top (NORTH) of the content pane
+        contentPane.add(titlePanel, BorderLayout.NORTH);
+        
         // ---------------- Tabs for Students, Programs, colleges ----------------
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
         tabbedPane.setFont(labelFont);
         tabbedPane.setBackground(bgMedium);
         tabbedPane.setForeground(fgLight);
@@ -595,7 +615,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         studentTopPanel.add(searchField);
 
-        comboBoxSearch = new JComboBox<>(new String[] { "ID Number", "Firstname", "Lastname", "Year Level", "Gender", "College Code", "Program Code" });
+        comboBoxSearch = new JComboBox<>(new String[] { "ID Number", "Firstname", "Lastname", "Year Level", "Gender", "Program Code" });
         comboBoxSearch.setFont(fieldFont);
         comboBoxSearch.setForeground(fgLight);
         comboBoxSearch.setBackground(bgMedium);
@@ -891,7 +911,15 @@ public class MainWindow extends javax.swing.JFrame {
 
         // Add the container to the EAST region of the studentsMainPanel
         studentsMainPanel.add(eastContainer, BorderLayout.EAST);
-        tabbedPane.addTab("Students", studentsMainPanel);
+        // Load the icon
+        ImageIcon studentIcon = new ImageIcon(getClass().getResource("/SIS/com/icons/student.png"));
+
+        // Optional: Scale the icon to fit nicely in the tab
+        Image scaledImage = studentIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+        // Add the tab with text, icon, and component
+        tabbedPane.addTab("Students      ", scaledIcon, studentsMainPanel);
 
 
         // =========== Programs Tab ===========
@@ -1131,10 +1159,18 @@ public class MainWindow extends javax.swing.JFrame {
         // Add the container to the EAST region of the programListPanel
         programListPanel.add(programContainer, BorderLayout.EAST);
 
-        tabbedPane.addTab("Programs", programListPanel);
+       
 
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
+        ImageIcon programIcon = new ImageIcon(getClass().getResource("/SIS/com/icons/book.png"));
+
+          // Optional: Scale the icon to fit nicely in the tab
+        Image programImage = programIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        ImageIcon scaledProgramIcon = new ImageIcon(programImage);
+  
+          // Add the tab with text, icon, and component
+        tabbedPane.addTab("Programs      ", scaledProgramIcon, programListPanel);
         
         // =========== Colleges Tab ===========
         collegeListPanel = new JPanel();
@@ -1336,8 +1372,15 @@ public class MainWindow extends javax.swing.JFrame {
         // Add the container to the EAST region of the collegeListPanel
         collegeListPanel.add(collegeContainer, BorderLayout.EAST);
 
-        tabbedPane.addTab("Colleges", collegeListPanel);
+        
+        ImageIcon collegeIcon = new ImageIcon(getClass().getResource("/SIS/com/icons/college.png"));
 
+          // Optional: Scale the icon to fit nicely in the tab
+        Image collegeIcons = collegeIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        ImageIcon scaledCollegeIcon = new ImageIcon(collegeIcons);
+  
+          // Add the tab with text, icon, and component
+        tabbedPane.addTab("Colleges      ", scaledCollegeIcon, collegeListPanel);
 
     }//END:initComponents
 
