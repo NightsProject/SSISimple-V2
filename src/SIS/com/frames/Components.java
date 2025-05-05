@@ -1164,6 +1164,8 @@ public static void editProgram(){
         collegeCodeP.setVisible(false);
         comboBoxCCP.setVisible(true);
 
+        int selectedRow = programTable.getSelectedRow();
+        String collegeCode = (String) programTable.getValueAt(selectedRow, 2);
         //loadthe college data
         comboBoxCCP.removeAllItems();
         for(int i = 0; i < Main.collegeData.size(); i++){
@@ -1173,6 +1175,7 @@ public static void editProgram(){
             comboBoxCCP.addItem(Main.collegeData.get(i).getCollegeCode());
 
         }
+        comboBoxCCP.setSelectedItem(collegeCode);
     }
 }
 
