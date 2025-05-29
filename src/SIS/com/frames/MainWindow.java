@@ -309,6 +309,7 @@ public class MainWindow extends javax.swing.JFrame {
         comboBoxY.setBorder(BorderFactory.createCompoundBorder(new LineBorder(accentColor, 1),
                                                             BorderFactory.createEmptyBorder(3,5,3,5)));
         comboBoxY.setAlignmentX(Component.LEFT_ALIGNMENT);
+        comboBoxY.setEditable(true);
         comboBoxY.setMaximumSize(new Dimension(Integer.MAX_VALUE, comboBoxY.getPreferredSize().height));
         comboBoxY.addItemListener(evt -> comboBoxYItemStateChanged(evt));
         addStudentPanel.add(comboBoxY);
