@@ -967,6 +967,28 @@ public static void confirmButtonStudentDialog(){
             lastnameCheck.setText("* Alphabetical letters only");
         }
 
+               
+        //firstname and lastname check
+        if(firstNameField.getText().isBlank() && lastNameField.getText().isBlank()){
+            checkpoint = false;
+        } else {
+            
+            String firstname = firstNameField.getText().toLowerCase();
+            String lastname = lastNameField.getText().toLowerCase();
+            
+            for(int i = 0; i < Main.studentData.size(); i++){
+            if(Main.END.equals(Main.studentData.get(i).getIdNum())){
+                break;
+            }
+            
+            if(firstname.equals(Main.studentData.get(i).getFirstName().toLowerCase()) && lastname.equals(Main.studentData.get(i).getLastName().toLowerCase())){
+                checkpoint = false;
+                firstnameCheck.setText("Both Firstname and Lastname exist");
+                lastnameCheck.setText("Both Firstname and Lastname exist");
+            }
+        }
+        }
+
         // Validate year level
         String yearLevel = (String) comboBoxYL.getSelectedItem();
         if (yearLevel == null || yearLevel.isEmpty()) {
@@ -1379,7 +1401,9 @@ public static void saveStudentClicked(){
         String pastLastname = studentTable.getValueAt(selectedRow, 2).toString().toLowerCase();
         
         //check if same from past and current name
+
         if(!pastFirstname.equals(firstname) && !pastLastname.equals(lastname)){
+          
             for(int i = 0; i < Main.studentData.size(); i++){
                 if(Main.END.equals(Main.studentData.get(i).getIdNum())){
                     break;
@@ -1388,7 +1412,7 @@ public static void saveStudentClicked(){
                 if(firstname.equals(Main.studentData.get(i).getFirstName().toLowerCase()) && lastname.equals(Main.studentData.get(i).getLastName().toLowerCase())){
                     checkpoint = false;
                     JOptionPane.showMessageDialog(null, "First Name and Last Name already exists", "Warning", JOptionPane.WARNING_MESSAGE);
-
+                    break;
                 }
             }
         }
